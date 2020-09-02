@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     else{
         const token = authorization.replace("Bearer ", "")
 
-        jwt.verify(token, "MY_SECRET_KEY", async(err, payload) => {
+        jwt.verify(token, "F1NT3CH@456", async(err, payload) => {
             if(err){
                 return res.send("You must be logged in")
             }

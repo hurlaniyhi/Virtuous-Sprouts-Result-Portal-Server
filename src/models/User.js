@@ -2,22 +2,27 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 const userSchema = new mongoose.Schema({ 
-    username: {
-        type: String,
-        unique: true,  // two people can not use thesame email
-        required: true    // trying to save to database without providing email will return error
-    },
-    password: {
+    
+    
+    fullName: {
         type: String,
         required: true
+    },
+    userId: {
+        type: String,
+        required: true,
+        unique: true   
     },
     customerID: {
         type: String,
         required: true
     },
-    counter: {
-        type: Number,
-        required: true
+    password: {
+        type: String,
+        required: true,
+    },
+    BVN: {
+        type: String,
     }
 })
 

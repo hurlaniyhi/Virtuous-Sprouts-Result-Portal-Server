@@ -99,56 +99,94 @@ router.post("/login", async (req, res) => {
           
     }else{
 
-      console.log(response.data)
+      
       const user = await Customer.findOne({ userId: response.data.userDetails.userId });
+
       if(!user){
 
-        const customer = new Customer({
-          fullName: response.data.userDetails.userFullName,
-          BVN: encryptor(response.data.userDetails.userBVN),
-          userId: response.data.userDetails.userId,
-          customerID: customerID,
-          password: encryptor(password)
-          
-        });
-        await customer.save((err, document)=>{
-          if(!err){
-            console.log(document)
-            const userToken = tokenGenerator(document._id)
+        const data2 = {  
+          customerID: encryptMe(customerID),
+          requestId: requestId,
+          category: 0,
+          channel: "TP-APICONNECT",
+          userId: encryptMe(response.data.userDetails.userId),
+          customerNumber: encryptMe(response.data.userDetails.userId),
+          sessionId: requestId
+        }
 
-            res.send({
-              message: "success",
-              userId: document.userId,
-              fullname: document.fullName,
-              customerId: document.customerID,
-              token: userToken
+        axios.post("https://collection.gtbank.com/AppServices/GTBCustomerService/Api/BalanceEnquiry", data2).then( async(response2) => {
+
+        console.log(response2.data.custDetails)  
+        var accountInfo =  []
+          
+          for (let check of response2.data.custDetails){
+            accountInfo.push({
+              accountNumber: check.nubanNumber,
+              accountType: check.accountType
             })
           }
-          else{
-            res.send({
-              message: "Error occured while saving information",
-              error: err
-            })
-          }
-        });
+          console.log(accountInfo)
+
+          const customer = new Customer({
+            fullName: response.data.userDetails.userFullName,
+            BVN: encryptor(response.data.userDetails.userBVN),
+            userId: response.data.userDetails.userId,
+            customerID: customerID,
+            password: encryptor(password),
+            accountLength: response2.data.custDetails.length,
+            accountInfo
+            
+          });
+          await customer.save((err, document)=>{
+            if(!err){
+              console.log(document)
+              const userToken = tokenGenerator(document._id)
+  
+              res.send({
+                message: "success",
+                userId: document.userId,
+                fullname: document.fullName,
+                customerId: document.customerID,
+                token: userToken,
+                num_account: document.accountLength,
+                accountInfo: document.accountInfo,
+                acct: "new"
+              })
+            }
+            else{
+              res.send({
+                message: "Error occured while saving information",
+                error: err
+              })
+            }
+          });
+
+        }).catch((err)=>{
+          console.log(err)
+          return res.send(err)
+        })
+
 
       }
       else{
         const userToken = tokenGenerator(user._id)
-
+          
           res.send({
             message: "success",
             userId: user.userId,
             fullname: user.username,
             customerId: user.customerID,
-            token: userToken
+            token: userToken,
+            num_account: user.accountLength,
+            accountInfo: user.accountInfo
           })
       }
     }
 
   }).catch((err) => {
-      res.send(err)
-      console.log(err)
+     console.log(err)
+     return res.send(err)
+      
   })
 
 }
@@ -158,6 +196,7 @@ catch(err){
   
   
 });
+
 
 
 // router.post("/counter", async (req, res) => {

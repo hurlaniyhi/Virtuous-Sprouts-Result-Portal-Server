@@ -1,6 +1,18 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
+
+const acctInfoSchema = new mongoose.Schema({ 
+    accountNumber: {
+        type: String,
+        required: true
+    },
+    accountType: {
+        type: String,
+        required: true
+    }
+})
+
 const userSchema = new mongoose.Schema({ 
     
     
@@ -23,7 +35,12 @@ const userSchema = new mongoose.Schema({
     },
     BVN: {
         type: String,
-    }
+    },
+    accountLength: {
+        type: Number,
+        required: true
+    },
+    accountInfo: [acctInfoSchema]
 })
 
 

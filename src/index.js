@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const authRoutes = require("./routes/authRoutes")
 
 const requireAuth = require("./middlewares/requireAuth")
-var port = process.env.PORT || 8080 
+var port = process.env.PORT || 3030 
 
 const app = express() 
 
@@ -48,5 +48,5 @@ app.get('/',requireAuth, (req, res) => {
 
 
 app.listen(port, ()=>{
-    console.log("Listening to port 8080")
+    console.log("Listening to port 3030")
 })

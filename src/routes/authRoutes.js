@@ -198,6 +198,25 @@ catch(err){
 });
 
 
+router.post("/enquiry", (req,res)=>{
+  const {userId} = req.body
+  const info = {  
+    customerID: encryptMe(userId),
+    requestId: encryptMe(makeid()),
+    category: 0,
+    channel: "TP-APICONNECT",
+    userId: encryptMe(userId),
+    customerNumber: encryptMe(userId),
+    sessionId: encryptMe(makeid())
+  }
+  axios.post("https://collection.gtbank.com/AppServices/GTBCustomerService/Api/BalanceEnquiry", info).then( async(response) => {
+    console.log(response.data)
+    res.send(response.data.custDetails)
+}).catch((err)=>{
+  res.send(err)
+})
+})
+
 
 // router.post("/counter", async (req, res) => {
 //   const { customerID } = req.body;

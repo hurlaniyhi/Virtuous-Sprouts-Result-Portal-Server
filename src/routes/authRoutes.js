@@ -120,20 +120,22 @@ router.post("/login", async (req, res) => {
         var accountInfo =  []
           
           for (let check of response2.data.custDetails){
+            if(check.accountType === "SAVINGS ACCOUNT" || check.accountType === "CURRENT ACCOUNT"){
             accountInfo.push({
               accountNumber: check.nubanNumber,
               accountType: check.accountType
             })
           }
+          }
          
-
+         console.log(accountInfo.length)
           const customer = new Customer({
             fullName: response.data.userDetails.userFullName,
             BVN: encryptor(response.data.userDetails.userBVN),
             userId: response.data.userDetails.userId,
             customerID: customerID,
             password: encryptor(password),
-            accountLength: response2.data.custDetails.length,
+            accountLength: accountInfo.length,
             accountInfo
             
           });

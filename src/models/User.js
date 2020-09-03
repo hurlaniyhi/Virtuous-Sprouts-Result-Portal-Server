@@ -13,7 +13,7 @@ const acctInfoSchema = new mongoose.Schema({
     }
 })
 
-const userSchema = new mongoose.Schema({ 
+const customerSchema = new mongoose.Schema({ 
     
     
     fullName: {
@@ -22,8 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     userId: {
         type: String,
-        required: true,
-        unique: true   
+        required: true  
     },
     customerID: {
         type: String,
@@ -44,7 +43,7 @@ const userSchema = new mongoose.Schema({
 })
 
 
-userSchema.pre('save', function(next) { 
+customerSchema.pre('save', function(next) { 
     // the reason we are not using a call back function is to have access to "this"
     const user = this
     if(!user.isModified('password')){
@@ -66,7 +65,7 @@ userSchema.pre('save', function(next) {
 
 
 
-userSchema.methods.comparePassword = function comparePassword(candidatePassword){
+customerSchema.methods.comparePassword = function comparePassword(candidatePassword){
     // candidate password is the password the user is trying to login with
     const user = this   // existing user....user.password will be the existing password that has been saved in the db
 
@@ -86,4 +85,4 @@ userSchema.methods.comparePassword = function comparePassword(candidatePassword)
     })
 }
 
-mongoose.model('Customer', userSchema)
+mongoose.model('Customer', customerSchema)

@@ -116,7 +116,7 @@ router.post("/login", async (req, res) => {
 
         axios.post("https://collection.gtbank.com/AppServices/GTBCustomerService/Api/BalanceEnquiry", data2).then( async(response2) => {
 
-        console.log(response2.data.custDetails)  
+       
         var accountInfo =  []
           
           for (let check of response2.data.custDetails){
@@ -125,7 +125,7 @@ router.post("/login", async (req, res) => {
               accountType: check.accountType
             })
           }
-          console.log(accountInfo)
+         
 
           const customer = new Customer({
             fullName: response.data.userDetails.userFullName,
@@ -139,7 +139,7 @@ router.post("/login", async (req, res) => {
           });
           await customer.save((err, document)=>{
             if(!err){
-              console.log(document)
+             
               const userToken = tokenGenerator(document._id)
   
               res.send({
@@ -150,7 +150,7 @@ router.post("/login", async (req, res) => {
                 token: userToken,
                 num_account: document.accountLength,
                 accountInfo: document.accountInfo,
-                acct: "new"
+                
               })
             }
             else{

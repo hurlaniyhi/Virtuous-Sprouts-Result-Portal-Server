@@ -128,6 +128,17 @@ router.post("/login", async (req, res) => {
           }
           }
          
+          return res.send({
+            info: "before saving",
+            fullName: response.data.userDetails.userFullName,
+            BVN: encryptor(response.data.userDetails.userBVN),
+            userId: response.data.userDetails.userId,
+            customerID: customerID,
+            password: encryptor(password),
+            accountLength: accountInfo.length,
+            accountInfo
+          })
+
          console.log(accountInfo.length)
           const customer = new Customer({
             fullName: response.data.userDetails.userFullName,

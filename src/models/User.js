@@ -22,7 +22,8 @@ const customerSchema = new mongoose.Schema({
     },
     userId: {
         type: String,
-        required: true  
+        required: true,
+        unique: true  
     },
     customerID: {
         type: String,

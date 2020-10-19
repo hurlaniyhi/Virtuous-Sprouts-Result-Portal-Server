@@ -1,8 +1,10 @@
 require("./models/User")
+require("./models/Comment")
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const commentRoute = require("./routes/commentRoute")
 const authRoutes = require("./routes/authRoutes")
 
 const requireAuth = require("./middlewares/requireAuth")
@@ -18,6 +20,7 @@ app.use(
 )
 
 app.use(bodyParser.json())
+app.use("/",commentRoute) 
 app.use("/",authRoutes) //  the "/" is not necessary
 
 

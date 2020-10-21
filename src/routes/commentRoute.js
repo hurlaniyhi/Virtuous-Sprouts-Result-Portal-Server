@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Comment = mongoose.model("Comment");
+const nodemailer = require('nodemailer')
 
 const router = express.Router();
 
@@ -53,5 +54,60 @@ router.delete("/delComment", async (req, res) => {
     }
   });
 });
+
+
+
+
+router.post("/mailMe", async(req,res)=>{
+
+    req.body.email = req.body.email.replace(/ /g, "")
+
+    const {sender, email, subject, content} = req.body
+
+    try {
+       
+        let transporter = nodemailer.createTransport({
+          
+         host: "smtp.gmail.com",
+         port: 465,
+         secure: true,
+          auth: {
+            user: 'gtfintech@gmail.com',
+            pass: 'rncvncbwdrixbscw'
+          },
+   
+        });
+      
+        let mailOptions = {
+          from: `"${sender}" <${email}>`, 
+          to: "olaniyi.jibola152@gmail.com", 
+          subject: subject, 
+          html: `<div>
+          <h4>Sender Email: ${email}</h4>
+          <p>${content}</p>
+          </div>`
+        
+        };
+      
+        transporter.sendMail(mailOptions, (error,info)=>{
+            
+          if(error){
+              return console.log(error)
+          } 
+    
+         else{ 
+             console.log("Message sent: %s", info.messageId);
+            
+             return res.send({message: "success"})
+          }
+        
+        })
+    }
+    catch(err){
+        res.send({message: "something went wrong"})
+    }
+   
+})
+
 
 module.exports = router;

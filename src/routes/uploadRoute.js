@@ -29,11 +29,11 @@ router.post('/dp', async(req,res) => {
     const upload = multer({storage}).single('picture')
     upload(req, res, function(err){
         if(err){
-            return res.send(err)
+            return res.send({message:"there is error", info: err})
         }
         console.log("file uploaded to server")
         //console.log(req.file)
-        
+        try{
         cloudinary.config({
             cloud_name: cloudName,
             api_key: apiKey,
@@ -41,7 +41,7 @@ router.post('/dp', async(req,res) => {
         })
         console.log("welcome to cloudinary")
         const path = req.file.path
-        try{
+        
         const uniqueFilename = new Date().toISOString()
 
         cloudinary.uploader.upload(

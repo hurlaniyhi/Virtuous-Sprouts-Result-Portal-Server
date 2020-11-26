@@ -1,26 +1,26 @@
 const jwt = require("jsonwebtoken")
 const mongoose = require('mongoose')
-const Customer = mongoose.model('Customer')
+const Staff = mongoose.model('Staff')
+const {secretKey} = require('../config')
 
 
 module.exports = (req, res, next) => {
     const {authorization} = req.headers
-    // authorization === "Bearer ourToken"
 
     if (!authorization){
-        return res.send("You must be logged in")
+        return res.send({message: "You must be logged in"})
     }
     else{
         const token = authorization.replace("Bearer ", "")
 
-        jwt.verify(token, "F1NT3CH@456", async(err, payload) => {
+        jwt.verify(token, secretKey, async(err, payload) => {
             if(err){
-                return res.send("You must be logged in")
+                return res.send({message: "You must be logged in"})
             }
             else{
-                const {userId} = payload
-                const customer = await Customer.findById(userId)
-                req.customer = customer
+                const {staffId} = payload
+                const staff = await Staff.findById(staffId)
+                req.staff = staff
                 next()
             }
         })

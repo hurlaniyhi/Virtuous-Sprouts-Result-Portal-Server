@@ -21,7 +21,7 @@ router.post('/dp', async(req,res) => {
             cb(null, 'uploads/')
         },
         filename: function(req, file, cb){
-            console.log(file)
+            //console.log(file)
             cb(null, file.originalname)
         }
     })   
@@ -34,51 +34,51 @@ router.post('/dp', async(req,res) => {
         console.log("file uploaded to server")
         //console.log(req.file)
         try{
-        cloudinary.config({
-            cloud_name: cloudName,
-            api_key: apiKey,
-            api_secret: apiSecret
-        })
-        console.log("welcome to cloudinary")
-        const path = req.file.path
-        
-        const uniqueFilename = new Date().toISOString()
+            cloudinary.config({
+                cloud_name: cloudName,
+                api_key: apiKey,
+                api_secret: apiSecret
+            })
+            console.log("welcome to cloudinary")
+            const path = req.file.path
+            
+            const uniqueFilename = new Date().toISOString()
 
-        cloudinary.uploader.upload(
-            path,
-            {
-                public_id: `blog/${uniqueFilename}`, tags: `blog`
-            },
-            async function(err, image){
-                if(err){ 
-                    console.log(err)
-                    return res.send({message: "Error occured during upload"})
-                }
-                console.log("file uploaded to cloudinary")
-
-                const fs = require('fs')
-                fs.unlinkSync(path)
-                //console.log(image)
-                //localsave.passport = image.secure_url
-
-
-                await Staff.findByIdAndUpdate({_id: req.staff._id}, 
-                    
-                    {$set: {profilePicture: image.secure_url}},
-                    { new: true },
-                     (err,doc)=>{
-                
-                    if (!err){
-                        console.log({message:"successfully updated", profile: doc})
-                        return res.send({message: "success", profile: doc})
-                    }
-                    else{
-                        console.log("Error occured during upload")
+            cloudinary.uploader.upload(
+                path,
+                {
+                    public_id: `blog/${uniqueFilename}`, tags: `blog`
+                },
+                async function(err, image){
+                    if(err){ 
+                        console.log(err)
                         return res.send({message: "Error occured during upload"})
                     }
-                })
-            }
-        )
+                    console.log("file uploaded to cloudinary")
+
+                    const fs = require('fs')
+                    fs.unlinkSync(path)
+                    //console.log(image)
+                    //localsave.passport = image.secure_url
+
+
+                    await Staff.findByIdAndUpdate({_id: req.staff._id}, 
+                        
+                        {$set: {profilePicture: image.secure_url}},
+                        { new: true },
+                        (err,doc)=>{
+                    
+                        if (!err){
+                            console.log({message:"successfully updated", profile: doc})
+                            return res.send({message: "success", profile: doc})
+                        }
+                        else{
+                            console.log("Error occured during upload")
+                            return res.send({message: "Error occured during upload"})
+                        }
+                    })
+                }
+            )
         }
         catch(err){
             return res.send({message: "error occured", info: err})

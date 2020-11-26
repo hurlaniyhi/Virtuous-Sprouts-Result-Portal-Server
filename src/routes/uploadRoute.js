@@ -35,9 +35,9 @@ router.post('/dp', async(req,res) => {
         console.log(req.file)
         
         cloudinary.config({
-            cloud_name: "dcx4utzdx",
-            api_key: "226791946435464",
-            api_secret: "yzsp3pOrvIEzFAhfMfWEIWXQmmA"
+            cloud_name: cloudName,
+            api_key: apiKey,
+            api_secret: apiSecret
         })
         console.log("welcome to cloudinary")
         const path = req.file.path

@@ -15,7 +15,7 @@ router.use(requireAuth)
 
 
 router.post('/dp', async(req,res) => {
-    console.log("entered")
+    
     storage = multer.diskStorage({
         destination: function(req, file, cb){
             cb(null, 'uploads/')
@@ -32,7 +32,7 @@ router.post('/dp', async(req,res) => {
             return res.send(err)
         }
         console.log("file uploaded to server")
-        console.log(req.file)
+        //console.log(req.file)
         
         cloudinary.config({
             cloud_name: cloudName,
@@ -41,7 +41,7 @@ router.post('/dp', async(req,res) => {
         })
         console.log("welcome to cloudinary")
         const path = req.file.path
-        
+        try{
         const uniqueFilename = new Date().toISOString()
 
         cloudinary.uploader.upload(
@@ -70,15 +70,19 @@ router.post('/dp', async(req,res) => {
                 
                     if (!err){
                         console.log({message:"successfully updated", profile: doc})
-                        res.send({message: "success", profile: doc})
+                        return res.send({message: "success", profile: doc})
                     }
                     else{
                         console.log("Error occured during upload")
-                        res.send({message: "Error occured during upload"})
+                        return res.send({message: "Error occured during upload"})
                     }
                 })
             }
         )
+        }
+        catch(err){
+            return res.send({message: "error occured", info: err})
+        }
 
     })
 })

@@ -13,18 +13,17 @@ const router = express.Router();
 router.use(requireAuth)
 
 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'uploads/')
+    },
+    filename: function(req, file, cb){
+        //console.log(file)
+        cb(null, file.originalname)
+    }
+})   
 
 router.post('/dp', async(req,res) => {
-    
-    storage = multer.diskStorage({
-        destination: function(req, file, cb){
-            cb(null, 'uploads/')
-        },
-        filename: function(req, file, cb){
-            //console.log(file)
-            cb(null, file.originalname)
-        }
-    })   
     
     const upload = multer({storage}).single('picture')
     upload(req, res, function(err){

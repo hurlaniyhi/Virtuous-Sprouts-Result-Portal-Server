@@ -7,6 +7,7 @@ const crypto = require("crypto")
 const multer = require('multer')
 const path = require('path')
 const cloudinary = require('cloudinary').v2
+const fs = require('fs-extra');
 
 
 const router = express.Router();
@@ -24,7 +25,12 @@ const storage = multer.diskStorage({
 })   
 
 router.post('/dp', async(req,res) => {
-    
+
+    // Create uploads folder
+    const dir = './uploads';
+    await fs.ensureDirSync(dir);
+    // **************************
+
     const upload = multer({storage}).single('picture')
     upload(req, res, function(err){
         if(err){

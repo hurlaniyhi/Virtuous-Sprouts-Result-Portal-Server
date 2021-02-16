@@ -2,14 +2,17 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 
-const staffSchema = new mongoose.Schema({ 
+const associateSchema = new mongoose.Schema({ 
     
     
     firstName: {
         type: String,
         required: true
     },
-    lastName: {
+    middleName: {
+        type: String,
+    },
+    surname: {
         type: String,
         required: true
     },
@@ -26,7 +29,14 @@ const staffSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    
+    passRecovery: {
+        type: String,
+        required: true
+    },
+    regId: {
+        type: String,
+        required: true
+    },
     phoneNumber: {
         type: Number,
         required: true
@@ -39,19 +49,11 @@ const staffSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    maritalStatus: {
+    memberClass: {
         type: String,
         required: true
     },
-    department: {
-        type: String,
-        required: true
-    },
-    userType: {
-        type: String,
-        required: true
-    },
-    jobStatus: {
+    memberType: {
         type: String,
         required: true
     },
@@ -61,7 +63,7 @@ const staffSchema = new mongoose.Schema({
 })
 
 
-staffSchema.pre('save', function(next) { 
+associateSchema.pre('save', function(next) { 
     // the reason we are not using a call back function is to have access to "this"
     const user = this
     if(!user.isModified('password')){
@@ -83,7 +85,7 @@ staffSchema.pre('save', function(next) {
 
 
 
-staffSchema.methods.comparePassword = function comparePassword(candidatePassword){
+associateSchema.methods.comparePassword = function comparePassword(candidatePassword){
     // candidate password is the password the user is trying to login with
     const user = this   // existing user....user.password will be the existing password that has been saved in the db
 
@@ -103,4 +105,4 @@ staffSchema.methods.comparePassword = function comparePassword(candidatePassword
     })
 }
 
-mongoose.model('Staff', staffSchema)
+mongoose.model('Associate', associateSchema)

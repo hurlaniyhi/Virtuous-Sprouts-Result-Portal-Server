@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const mongoose = require('mongoose')
-const Staff = mongoose.model('Staff')
+const Associate = mongoose.model('Associate')
 const {secretKey} = require('../config')
 
 
@@ -18,9 +18,9 @@ module.exports = (req, res, next) => {
                 return res.send({message: "You must be logged in"})
             }
             else{
-                const {staffId} = payload
-                const staff = await Staff.findById(staffId)
-                req.staff = staff
+                const {memberId} = payload
+                const member = await Associate.findById(memberId)
+                req.member = member
                 next()
             }
         })

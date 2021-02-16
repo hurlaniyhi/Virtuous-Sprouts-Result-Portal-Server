@@ -23,7 +23,7 @@ exports.passwordGenerator = () => {
 
 }
 
-exports. capitalizer = (str) => {
+exports.capitalizer = (str) => {
    
     return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
         return letter.toUpperCase();
@@ -31,7 +31,7 @@ exports. capitalizer = (str) => {
       
 }
 
-exports. spaceRemover = (str) => {
+exports.spaceRemover = (str) => {
    
     var removed = str.replace(/ /g, "")
     return removed

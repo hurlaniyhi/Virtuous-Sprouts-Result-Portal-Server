@@ -1,13 +1,13 @@
-require("./models/User")
+require("./models/Associate")
 require("./models/File")
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const authRoute = require("./routes/authRoute")
-const messageRoute = require("./routes/messageRoute")
-const uploadRoute = require("./routes/uploadRoute")
-const documentRoute = require("./routes/documentRoute")
+// const messageRoute = require("./routes/messageRoute")
+// const uploadRoute = require("./routes/uploadRoute")
+// const documentRoute = require("./routes/documentRoute")
 const {databaseKey} = require('./config')
 
 const requireAuth = require("./middlewares/requireAuth")
@@ -24,9 +24,9 @@ app.use(
 
 app.use(bodyParser.json())
 app.use("/",authRoute)
-app.use("/",documentRoute)
-app.use("/",messageRoute)
-app.use("/",uploadRoute)
+// app.use("/",documentRoute)
+// app.use("/",messageRoute)
+// app.use("/",uploadRoute)
 
 
 

@@ -187,59 +187,112 @@ router.post("/changePassword", requireAuth, async(req,res) => {
 
 
 
-router.post("/user", requireAuth, async(req,res) => {
+router.post("/member", async(req,res) => {
+    req.body.username = req.body.username.toLowerCase()
+    const {username, regId} = req.body
+    
     
     try{
-        if(req.body.user){
-            const member = await Associate.findOne({username: req.body.user})
+        if(username && regId){
+            const member = await Associate.findOne({username, regId})
             if(member){
-                return res.send({message: "success", profile: member})
+                return res.send({responseCode: "00", message: "success", info: member})
             }
             else{
-                return res.send({message: "Member did not exist"})
+                return res.send({responseCode: "01", message: "Member did not exist"})
             }
         }
         else{
-            return res.send({message: "success", profile: req.member})
+            return res.send({responseCode: "01", message: "kindly provide required field"})
         }
        
     }
     catch(err){
-        return res.send({message: "No network connection"})
+        return res.send({responseCode: "101", message: "No network connection"})
     }
 })
 
 
 
-router.post("/fetchMember", requireAuth, async(req,res) => {
-    const {type} = req.body
+router.post("/fetchMembers", async(req,res) => {
+    const {memberClass} = req.body
    
     try{
-        if(type === "all"){
-            const allMembers = await Associate.find({})
-           
-            if(allMembers){
-               return res.send({message: "success", info: allMembers})
-            }
-            else{
-                return res.send({message: "No member currently"})
-            }
+        const allMembers = await Associate.find({memberClass})
+        
+        if(allMembers){
+            return res.send({responseCode: "00", message: "success", info: allMembers})
         }
         else{
-            const allMembers = await Associate.find({department: type})
-
-            if(allMembers){
-                return res.send({message: "success", info: allMembers})
-            }
-            else{
-                return res.send({message: "No member currently"})
-            }
+            return res.send({responseCode: "01", message: "This class currently did not have any member"})
         }
+        
     }
     catch(err){
-        res.send({message: "Something went wrong", error: err})
+        res.send({responseCode: "101", message: "Something went wrong", error: err})
     }  
 }) 
+
+
+router.post("/updateMember", async(req,res) => {
+
+    req.body.firstName = capitalizer(req.body.firstName)
+    req.body.firstName = spaceRemover(req.body.firstName)
+    req.body.surname = capitalizer(req.body.surname)
+    req.body.surname = spaceRemover(req.body.surname)
+    req.body.email = spaceRemover(req.body.email)
+
+    if(req.body.middleName){
+        req.body.middleName = spaceRemover(req.body.firstName)
+        req.body.middleName = capitalizer(req.body.lastName)
+    }
+    if(!req.body.id){
+        return res.send({responseCode: "01", message: "Kindly provide all required field"})
+    }
+
+    const {
+        firstName, middleName, surname,
+        email, memberType,
+        phoneNumber, address, 
+        memberClass, gender, id
+    } = req.body
+
+    var username = `${firstName}.${surname}`
+    username = username.toLowerCase()
+
+    try{
+        await Associate.findByIdAndUpdate({_id: id}, {
+                        
+            $set: {
+                firstName,
+                middleName,
+                surname,
+                username,
+                email,
+                memberType,
+                memberClass,
+                phoneNumber,
+                address,
+                gender
+            }
+                
+            }, (err,doc)=>{
+        
+            if (!err){
+                console.log({responseCode: "00", message:"successfully updated", member: doc})
+                res.send({responseCode: "00", message: "successfully updated", info: doc})
+            }
+            else{
+                console.log("error occured during update")
+                res.send({responseCode: "01", message: "error occured while updating information"})
+            }
+        })
+    }
+    catch(err){
+        res.send({responseCode: "01", message: "Soemthing went wrong", error: err})
+    }
+
+})
 
 
 router.post("/deleteMember", async(req,res) => {

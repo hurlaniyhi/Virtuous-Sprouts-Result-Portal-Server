@@ -108,7 +108,7 @@ router.get("/get-result", async(req,res) =>{
                 }
                 resultData.push(subjectResult)
             }
-            return res.send({responseCode: "00", message: "Success", result: resultData})
+            return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {testId: testResult._id}})
         }
         if(examResult && !testResult){
             for(let check of examResult.examResult){
@@ -120,7 +120,7 @@ router.get("/get-result", async(req,res) =>{
                 }
                 resultData.push(subjectResult)
             }
-            return res.send({responseCode: "00", message: "Success", result: resultData})
+            return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {examId: examResult._id}})
         }
         if(examResult && testResult){
             
@@ -152,7 +152,7 @@ router.get("/get-result", async(req,res) =>{
                     isPushed = false
                 }
             }
-            return res.send({responseCode: "00", message: "Success", result: resultData})
+            return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {testId: testResult._id, examId: examResult._id}})
         }
     }
     catch(err){
@@ -161,6 +161,82 @@ router.get("/get-result", async(req,res) =>{
     
 })
 
+
+router.post("/edit-result", async(req, res) => {
+    var today = new Date()
+    let year = today.getFullYear()
+
+    const {resultId, session, term, memberType, resultType, updatedResult} = req.body
+    if(!resultId || !session || !term || !memberType || !resultType || !updatedResult){
+        return res.send({responseCode: "01", message: "Kindly provide all required information"})
+    }
+    if(resultType != "Exam" && resultType != "Test"){
+        return res.send({responseCode: "01", message: "Kindly provide valid result type (Exam or Test)"})
+    }
+
+    if(memberType != "Admin" && Number(session.substring(session.indexOf("/")+1, session.length)) < year){
+       return res.send({responseCode: "01", message: "Only admin is authorised to edit this result"})
+    }
+
+    try{
+        if(resultType === "Test"){
+            var check = await Test.findOne({_id: resultId})
+            if(!check){
+                return res.send({responseCode: "01", message: "The result you are trying to update did not have test result"})
+            }
+            
+            await Test.findByIdAndUpdate({_id: resultId}, {
+                            
+                $set: {
+                    term,
+                    session,
+                    testResult: updatedResult
+                }
+                    
+                }, {new: true}, (err,doc)=>{
+            
+                if (!err){
+                    console.log({message:"successfully updated"})
+                    return res.send({responseCode: "00", message: "successfully updated", updatedResult: doc})
+                }
+                else{
+                    console.log("error occured during update")
+                    return res.send({responseCode: "01", message: "error occured while updating result"})
+                }
+            })
+        }
+        else if(resultType === "Exam"){
+           var check = await Exam.findOne({_id: resultId})
+            if(!check){
+                return res.send({responseCode: "01", message: "The result you are trying to update did not have exam result"})
+            }
+            await Exam.findByIdAndUpdate({_id: resultId}, {
+                            
+                $set: {
+                    term,
+                    session,
+                    examResult: updatedResult
+                }
+                    
+                }, {new: true}, (err,doc)=>{
+            
+                if (!err){
+                    console.log({message:"successfully updated"})
+                    return res.send({responseCode: "00", message: "successfully updated", updatedResult: doc})
+                }
+                else{
+                    console.log("error occured during update")
+                    return res.send({responseCode: "01", message: "error occured while updating result"})
+                }
+            })
+        }
+    }
+    catch(err){
+        return res.send({responseCode: "101", message: "Something went wrong", error: err})
+    }
+    
+    
+})
 
 
 module.exports = router

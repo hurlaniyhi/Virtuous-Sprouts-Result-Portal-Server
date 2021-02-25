@@ -261,6 +261,11 @@ router.post("/updateMember", async(req,res) => {
     username = username.toLowerCase()
 
     try{
+        var check = await Associate.findOne({_id: id})
+        if(!check){
+            return res.send({responseCode: "01", message: "The member's profile you want to update did not exist"})
+        }
+        
         await Associate.findByIdAndUpdate({_id: id}, {
                         
             $set: {
@@ -276,7 +281,7 @@ router.post("/updateMember", async(req,res) => {
                 gender
             }
                 
-            }, (err,doc)=>{
+            }, {new: true}, (err,doc)=>{
         
             if (!err){
                 console.log({responseCode: "00", message:"successfully updated", member: doc})

@@ -1,11 +1,12 @@
 require("./models/Associate")
-require("./models/File")
+require("./models/Test")
+require("./models/Exam")
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const authRoute = require("./routes/authRoute")
-// const messageRoute = require("./routes/messageRoute")
+const resultRoute = require("./routes/resultRoute")
 // const uploadRoute = require("./routes/uploadRoute")
 // const documentRoute = require("./routes/documentRoute")
 const {databaseKey} = require('./config')
@@ -24,10 +25,7 @@ app.use(
 
 app.use(bodyParser.json())
 app.use("/",authRoute)
-// app.use("/",documentRoute)
-// app.use("/",messageRoute)
-// app.use("/",uploadRoute)
-
+app.use("/",resultRoute)
 
 
 // fintech.request@gmail.com

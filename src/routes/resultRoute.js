@@ -123,8 +123,9 @@ router.get("/get-result", async(req,res) =>{
             return res.send({responseCode: "00", message: "Success", result: resultData})
         }
         if(examResult && testResult){
-            let isPushed = false
+            
             for(let check of examResult.examResult){
+                let isPushed = false
                 for(let compare of testResult.testResult){
                     if(check.subject === compare.subject){
                         subjectResult = {

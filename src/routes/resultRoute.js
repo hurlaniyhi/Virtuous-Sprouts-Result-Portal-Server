@@ -184,7 +184,7 @@ router.post("/edit-result", async(req, res) => {
             if(!check){
                 return res.send({responseCode: "01", message: "The result you are trying to update did not have test result"})
             }
-            
+
             await Test.findByIdAndUpdate({_id: resultId}, {
                             
                 $set: {
@@ -234,8 +234,81 @@ router.post("/edit-result", async(req, res) => {
     catch(err){
         return res.send({responseCode: "101", message: "Something went wrong", error: err})
     }
-    
-    
+     
+})
+
+
+router.post("/delete-result", async(req, res) => {
+    const {studentName, studentClass, session, term} = req.body
+    if(!studentName || !studentClass || !session || !term){
+        return res.send({responseCode: "01", message: "Kindly provide all required information"})
+    }
+
+    try{
+        var checkTest = await Test.findOne({studentName, studentClass, term, session})
+        var checkExam = await Exam.findOne({studentName, studentClass, term, session})
+
+        if(!checkExam && !checkTest){
+            return res.send({responseCode: "01", message: "The result you want to delete did not exist"})
+        }
+
+        let verifiedExam = false
+        let verifiedTest = false
+
+        if(checkExam){
+            await Exam.findOneAndDelete({studentName, studentClass, term, session}, 
+                (err, docs) => {
+                    if(!err){
+                        verifiedExam = true
+                    }
+                    else{
+                        verifiedExam = false
+                    }
+                }
+            )
+        }
+        if(checkTest){
+           await Test.findOneAndDelete({studentName, studentClass, term, session}, 
+                (err, docs) => {
+                    if(!err){
+                        verifiedTest = true
+                    }
+                    else{
+                        verifiedTest = false
+                    }
+                }
+            )
+        }
+
+        if(checkExam && checkTest){
+            if(verifiedExam && verifiedTest){
+                return res.send({responseCode: "00", message: "Result successfully deleted"})
+            }
+            else{
+                return res.send({responseCode: "01", message: "Error occur while deleting resulting"})
+            }
+        }
+        else if(checkExam){
+            if(verifiedExam){
+                return res.send({responseCode: "00", message: "Result successfully deleted"})
+            }
+            else{
+                return res.send({responseCode: "02", message: "Error occur while deleting resulting"})
+            }
+        }
+        else if(checkTest){
+            if(verifiedTest){
+                return res.send({responseCode: "00", message: "Result successfully deleted"})
+            }
+            else{
+                return res.send({responseCode: "03", message: "Error occur while deleting resulting"})
+            }
+        }
+    }
+    catch(err){
+        return res.send({responseCode: "01", message: "Something went wrong", error: err})
+    }
+     
 })
 
 

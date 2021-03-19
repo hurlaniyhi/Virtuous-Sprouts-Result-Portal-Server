@@ -14,7 +14,12 @@ const router = express.Router();
 
 
 router.post("/addMember", async(req,res) => {
-    
+
+    if(!req.body.firstName || !req.body.surname || !req.body.email || !req.body.address || !req.body.phoneNumber
+        || !req.body.memberClass || !req.body.memberType || !req.body.gender){
+            return res.send({responseCode: "400", message: "Kindly provide all required information"})
+        }
+
     req.body.firstName = capitalizer(req.body.firstName)
     req.body.firstName = spaceRemover(req.body.firstName)
     req.body.surname = capitalizer(req.body.surname)
@@ -114,13 +119,18 @@ router.post("/addMember", async(req,res) => {
     }
     catch(err){
         console.log(err)
-        return res.send({responseCode: "01", message: "Member already exist", error: err})
+        return res.send({responseCode: "01", message: "Could not add member, try again later", error: err})
     }
 
 })
 
 router.post("/login", async(req,res) => {
-    //req.body.username = spaceRemover(req.body.username)
+
+    if(!req.body.username || !req.body.password){
+        return res.send({responseCode: "400", message: "Kindly provided all required information"})
+    }
+
+    req.body.username = spaceRemover(req.body.username)
     req.body.username = req.body.username.toLowerCase()
 
     const {username, password} = req.body
@@ -208,7 +218,7 @@ router.post("/member", async(req,res) => {
        
     }
     catch(err){
-        return res.send({responseCode: "101", message: "No network connection"})
+        return res.send({responseCode: "101", message: "Something went wrong"})
     }
 })
 
@@ -235,6 +245,11 @@ router.post("/fetchMembers", async(req,res) => {
 
 
 router.post("/updateMember", async(req,res) => {
+
+    if(!req.body.firstName || !req.body.surname || !req.body.email || !req.body.address || !req.body.phoneNumber
+        || !req.body.memberClass || !req.body.memberType || !req.body.gender){
+            return res.send({responseCode: "400", message: "Kindly provide all required information"})
+        }
 
     req.body.firstName = capitalizer(req.body.firstName)
     req.body.firstName = spaceRemover(req.body.firstName)

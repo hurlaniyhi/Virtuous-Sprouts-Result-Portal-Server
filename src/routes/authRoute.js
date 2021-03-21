@@ -172,7 +172,10 @@ router.post("/changePassword", requireAuth, async(req,res) => {
 
                     await Associate.findByIdAndUpdate({_id: member._id}, {
                         
-                    $set: {password: newpassword}
+                    $set: {
+                        password: newpassword,
+                        passRecovery: req.body.password
+                    }
                         
                     }, (err,doc)=>{
                 

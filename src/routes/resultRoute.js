@@ -86,7 +86,7 @@ router.post("/upload-result", async(req, res)=>{
     }
 })
 
-router.get("/get-result", async(req,res) =>{
+router.post("/get-result", async(req,res) =>{
     const {studentName, studentClass, session, term} = req.body
     
     try{

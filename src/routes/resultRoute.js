@@ -240,7 +240,7 @@ router.post("/edit-result", async(req, res) => {
 
 router.post("/delete-result", async(req, res) => {
     const {studentName, studentClass, session, term} = req.body
-    if((studentName || !studentClass || !session || !term)){
+    if(!(studentName || studentClass || session || term)){
         return res.send({responseCode: "01", message: "Kindly provide all required information"})
     }
 

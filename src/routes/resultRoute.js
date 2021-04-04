@@ -23,7 +23,7 @@ router.post("/upload-result", async(req, res)=>{
 
     try{
         if(resultType === "Test"){
-            var testResult = await Test.findOne({studentName, studentClass, term, session})
+            var testResult = await Test.findOne({studentName, term, session}) // studentClass
             if(testResult){
                 return res.send({
                     responseCode: "01", 
@@ -50,7 +50,7 @@ router.post("/upload-result", async(req, res)=>{
             })
         }
         else if(resultType === "Exam"){
-            var examResult = await Exam.findOne({studentName, studentClass, term, session})
+            var examResult = await Exam.findOne({studentName, term, session}) // studentClass
             if(examResult){
                 return res.send({
                     responseCode: "01", 
@@ -90,8 +90,8 @@ router.post("/get-result", async(req,res) =>{
     const {studentName, studentClass, session, term} = req.body
     
     try{
-        var testResult = await Test.findOne({studentName, studentClass, term, session})
-        var examResult = await Exam.findOne({studentName, studentClass, term, session})
+        var testResult = await Test.findOne({studentName, term, session}) // studentClass
+        var examResult = await Exam.findOne({studentName, term, session}) // studentClass
         let resultData = []
         let subjectResult = {};
 
@@ -240,13 +240,14 @@ router.post("/edit-result", async(req, res) => {
 
 router.post("/delete-result", async(req, res) => {
     const {studentName, studentClass, session, term} = req.body
-    if(!(studentName || studentClass || session || term)){
+    if(!studentName || !studentClass || !session || !term){
         return res.send({responseCode: "01", message: "Kindly provide all required information"})
     }
 
     try{
-        var checkTest = await Test.findOne({studentName, studentClass, term, session})
-        var checkExam = await Exam.findOne({studentName, studentClass, term, session})
+        console.log(req.body)
+        var checkTest = await Test.findOne({studentName, term, session}) // studentClass
+        var checkExam = await Exam.findOne({studentName, term, session}) // studentClass
 
         if(!checkExam && !checkTest){
             return res.send({responseCode: "01", message: "The result you want to delete did not exist"})
@@ -256,7 +257,7 @@ router.post("/delete-result", async(req, res) => {
         let verifiedTest = false
 
         if(checkExam){
-            await Exam.findOneAndDelete({studentName, studentClass, term, session}, 
+            await Exam.findOneAndDelete({studentName, term, session}, // studentClass
                 (err, docs) => {
                     if(!err){
                         verifiedExam = true
@@ -268,7 +269,7 @@ router.post("/delete-result", async(req, res) => {
             )
         }
         if(checkTest){
-           await Test.findOneAndDelete({studentName, studentClass, term, session}, 
+           await Test.findOneAndDelete({studentName, term, session}, // studentClass
                 (err, docs) => {
                     if(!err){
                         verifiedTest = true

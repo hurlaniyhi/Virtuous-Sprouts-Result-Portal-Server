@@ -48,6 +48,7 @@ router.post("/addMember", async(req,res) => {
         const members = await Associate.find({})
 
         let regId = String(members.length + 1)
+        let regForVerification = regId
         let pref = `${firstName.substring(0,3).toUpperCase()}/${surname.substring(0,3).toUpperCase()}`
         if(regId.length === 1){
             regId = `${pref}/00${regId}`
@@ -60,6 +61,12 @@ router.post("/addMember", async(req,res) => {
         }
 
         var password = regId
+
+        for(let check of members){
+            if(check.username === username){
+                username = username + regForVerification
+            }
+        }
 
         const member = new Associate({
             firstName,

@@ -152,7 +152,28 @@ router.post("/get-result", async(req,res) =>{
                     isPushed = false
                 }
             }
-            return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {testId: testResult._id, examId: examResult._id}})
+
+            let combinedResult = [...resultData]
+            for(let add of testResult.testResult){
+                let isAmong = false
+                for(let check of resultData){
+                    if(add.subject === check.subject){
+                        isAmong = true
+                        break
+                    }
+                }
+                if(!isAmong){
+                    subjectResult = {
+                        subject: add.subject,
+                        testScore: add.score,
+                        examScore: "",
+                        totalScore: add.score
+                    }
+                    combinedResult.push(subjectResult)
+                }
+            }
+
+            return res.send({responseCode: "00", message: "Success", result: combinedResult, resultID: {testId: testResult._id, examId: examResult._id}})
         }
     }
     catch(err){
@@ -311,6 +332,17 @@ router.post("/delete-result", async(req, res) => {
     }
      
 })
+
+// router.post("/deleteAll", async(req,res) =>{
+//     await Test.deleteMany({}, (err, doc)=>{
+//         if(!err){
+//            return res.send({responseCode: "00", message: "deleted"})
+//         }
+//         else{
+//             return res.send({responseCode: "01"})
+//         }
+//     })
+// })
 
 
 module.exports = router

@@ -3,10 +3,10 @@ const mongoose = require('mongoose')
 const nodemailer = require('nodemailer')
 const crypto = require("crypto")
 const multer = require('multer')
-const path = require("path")
-const requireAuth = require("../middlewares/requireAuth");
+//const path = require("path")
+//const requireAuth = require("../middlewares/requireAuth");
+const {cocantenateTestAndExam} = require('../functions/allFunctions')
 const {secretKey, emailUser, emailPass} = require('../config')
-const {databaseKey} = require('../config')
 const Test = mongoose.model("Test");
 const Exam = mongoose.model("Exam");
 mongoose.set('useFindAndModify', false);
@@ -123,56 +123,7 @@ router.post("/get-result", async(req,res) =>{
             return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {examId: examResult._id}})
         }
         if(examResult && testResult){
-            
-            for(let check of examResult.examResult){
-                let isPushed = false
-                for(let compare of testResult.testResult){
-                    if(check.subject === compare.subject){
-                        subjectResult = {
-                            subject: check.subject,
-                            testScore: compare.score,
-                            examScore: check.score,
-                            totalScore: check.score + compare.score
-                        }
-                        resultData.push(subjectResult)
-                        isPushed = true;
-                        break;
-                    }
-                    else{
-                        subjectResult = {
-                            subject: check.subject,
-                            testScore: "",
-                            examScore: check.score,
-                            totalScore: check.score
-                        }
-                    }
-                }
-                if(!isPushed && subjectResult){
-                    resultData.push(subjectResult)
-                    isPushed = false
-                }
-            }
-
-            let combinedResult = [...resultData]
-            for(let add of testResult.testResult){
-                let isAmong = false
-                for(let check of resultData){
-                    if(add.subject === check.subject){
-                        isAmong = true
-                        break
-                    }
-                }
-                if(!isAmong){
-                    subjectResult = {
-                        subject: add.subject,
-                        testScore: add.score,
-                        examScore: "",
-                        totalScore: add.score
-                    }
-                    combinedResult.push(subjectResult)
-                }
-            }
-
+            let combinedResult = cocantenateTestAndExam(examResult.examResult, testResult.testResult)
             return res.send({responseCode: "00", message: "Success", result: combinedResult, resultID: {testId: testResult._id, examId: examResult._id}})
         }
     }

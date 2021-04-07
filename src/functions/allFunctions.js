@@ -37,3 +37,58 @@ exports.spaceRemover = (str) => {
     return removed
       
 }
+
+exports.cocantenateTestAndExam = (firstArray, secondArray) => {
+  let subjectResult
+  let resultData = []
+  
+  for(let check of firstArray){
+    let isPushed = false
+    for(let compare of secondArray){
+        if(check.subject === compare.subject){
+            subjectResult = {
+                subject: check.subject,
+                testScore: compare.score,
+                examScore: check.score,
+                totalScore: check.score + compare.score
+            }
+            resultData.push(subjectResult)
+            isPushed = true;
+            break;
+        }
+        else{
+             subjectResult = {
+                subject: check.subject,
+                testScore: "",
+                examScore: check.score,
+                totalScore: check.score
+            }
+        }
+    }
+    if(!isPushed && subjectResult){
+        resultData.push(subjectResult)
+        isPushed = false
+    }
+  }
+
+  let combinedResult = [...resultData]
+  for(let add of secondArray){
+      let isAmong = false
+      for(let check of resultData){
+          if(add.subject === check.subject){
+              isAmong = true
+              break
+          }
+      }
+      if(!isAmong){
+           subjectResult = {
+              subject: add.subject,
+              testScore: add.score,
+              examScore: "",
+              totalScore: add.score
+          }
+          combinedResult.push(subjectResult)
+      }
+  }
+  return combinedResult
+}

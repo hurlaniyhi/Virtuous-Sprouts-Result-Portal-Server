@@ -68,7 +68,7 @@ router.post("/addMember", async(req,res) => {
             }
         }
 
-        regDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`
+        regDate = `${new Date().getDate()} / ${new Date().getMonth()+1} / ${new Date().getFullYear()}`
 
         const member = new Associate({
             firstName,

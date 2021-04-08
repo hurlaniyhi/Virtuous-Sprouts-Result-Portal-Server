@@ -68,6 +68,8 @@ router.post("/addMember", async(req,res) => {
             }
         }
 
+        regDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`
+
         const member = new Associate({
             firstName,
             surname,
@@ -81,7 +83,8 @@ router.post("/addMember", async(req,res) => {
             regId,
             memberClass,
             gender,
-            username
+            username,
+            regDate
         })
           
         await member.save()

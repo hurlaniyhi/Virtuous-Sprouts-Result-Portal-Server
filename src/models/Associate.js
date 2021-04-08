@@ -59,6 +59,9 @@ const associateSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String
+    },
+    regDate: {
+        type: String
     }
 })
 

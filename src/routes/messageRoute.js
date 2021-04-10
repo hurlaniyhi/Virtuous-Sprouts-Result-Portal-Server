@@ -52,7 +52,7 @@ router.post('/broadcastMail', async(req,res) => {
         } 
         else{ 
             console.log("Message sent: %s", info.messageId);
-            return res.send({responseCode: "00", message: "success"})
+            return res.send({responseCode: "00", message: "Broadcast mail successfully sent"})
         } 
     })
 })

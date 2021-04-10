@@ -7,6 +7,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const authRoute = require("./routes/authRoute")
 const resultRoute = require("./routes/resultRoute")
+const messageRoute = require("./routes/messageRoute")
 // const uploadRoute = require("./routes/uploadRoute")
 // const documentRoute = require("./routes/documentRoute")
 const {databaseKey} = require('./config')
@@ -26,6 +27,7 @@ app.use(
 app.use(bodyParser.json())
 app.use("/",authRoute)
 app.use("/",resultRoute)
+app.use("/",messageRoute)
 
 
 // fintech.request@gmail.com

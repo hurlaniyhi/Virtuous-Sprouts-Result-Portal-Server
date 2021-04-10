@@ -1,134 +1,60 @@
-// const {passwordGenerator, capitalizer, spaceRemover} = require('../functions/allFunctions')
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const Staff = mongoose.model("Staff");
-// const requireAuth = require("../middlewares/requireAuth");
-// const {secretKey, emailUser, emailPass} = require('../config')
-// const nodemailer = require('nodemailer')
+const express = require("express");
+const mongoose = require("mongoose");
+const Associate = mongoose.model("Associate");
+const requireAuth = require("../middlewares/requireAuth");
+const { emailUser, emailPass } = require('../config')
+const nodemailer = require('nodemailer')
 
-// const router = express.Router();
-// //router.use(requireAuth)
-
+const router = express.Router();
+//router.use(requireAuth)
 
 
-// router.post('/directMail', async(req,res) => {
-//     const {subject, content, userType} = req.body
 
+router.post('/broadcastMail', async(req,res) => {
+    const {mailSubject, mailContent} = req.body
 
-//     if(userType === "Admin"){
-//         const allStaff = await Staff.find({})
-//         var bucket = []
+    const allMembers = await Associate.find({})
+    var emailReceivers = []
 
-//         for (let pick of allStaff){
-//             bucket.push(pick.email)
-//         }
+    for (let pick of allMembers){
+        if(pick.memberType === "Student"){
+            emailReceivers.push(pick.email)
+        }
+    }
 
-//         var receiver = bucket
-//         var sender = `"Check D'Deck Homes Admin" <fintech.request@gmail.com>`
-//     }
-//     else if(userType === "Staff"){
-//         var receiver = "fintech.request@gmail.com"
-//         var sender = `${req.staff.firstName} ${req.staff.lastName} <${req.staff.email}>`
-//     }
+    var receiver = emailReceivers
+    var sender = `"Virtuous Sprouts Academy" <rhydhurapp@gmail.com>`
 
-//     let transporter = nodemailer.createTransport({
-//         host: "smtp.gmail.com",
-//         port: 465,
-//         secure: true,
-//          auth: {
-//            user: emailUser,
-//            pass: emailPass
-//          },
-//        });
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+         auth: {
+           user: emailUser,
+           pass: emailPass
+         },
+       });
      
-//        let mailOptions = {
-//          from: sender, 
-//          to: receiver, 
-//          subject: subject, 
-//          html: `<div>
-//                     <p>${content}</p>
-//                 </div>`
-//         };
-     
-//        transporter.sendMail(mailOptions, (error,info)=>{
-           
-//             if(error){
-//                 console.log("could not send message")
-//                 return res.send({message: "Error occur while sending message"})
-//             } 
-//             else{ 
-//                 console.log("Message sent: %s", info.messageId);
-//                 return res.send({message: "success"})
-//             } 
-//         })
-// })
-
-
-// router.post('/personalMail', async(req,res) => {
-//     const {receiverName, subject, content, userType} = req.body
+    let mailOptions = {
+        from: sender, 
+        to: receiver, 
+        subject: mailSubject, 
+        html: `<div>
+                <p>${mailContent}</p>
+            </div>`
+    };
     
-//     var username = receiverName.replace(/ /g, ".")
-//     username = username.toLowerCase()
-//     console.log(username)
-
-   
-//     const staff = await Staff.findOne({username: username})
-    
-//     if(!staff){
-//         return res.send({message: "Receiver name is incorrect"})
-//     }
-
-//     if(userType === "Admin"){
-//         var sender = `"Check D'Deck Homes Admin" <fintech.request@gmail.com>`
-//     }
-//     else if(userType === "Staff"){
-//         var sender = `${req.staff.firstName} ${req.staff.lastName} <${req.staff.email}>`
-//     }
-
-//     let transporter = nodemailer.createTransport({
-//         host: "smtp.gmail.com",
-//         port: 465,
-//         secure: true,
-//          auth: {
-//            user: emailUser,
-//            pass: emailPass
-//          },
-//        });
-     
-//        let mailOptions = {
-//          from: sender, 
-//          to: staff.email, 
-//          subject: subject, 
-//          html: `<div>
-//                     <p>${content}</p>
-//                 </div>`
-//         };
-     
-//        transporter.sendMail(mailOptions, (error,info)=>{
-           
-//             if(error){
-//                 console.log("could not send message")
-//                 return res.send({message: "Error occur while sending message"})
-//             } 
-//             else{ 
-//                 console.log("Message sent: %s", info.messageId);
-//                 return res.send({message: "success"})
-//             } 
-//         })
-// })
-
-// router.post("/lakadir", (req,res) => {
-//     console.log("enter")
-//     if(req.body.name){
-//         res.send({message: "success"})
-//     }
-//     else{
+    transporter.sendMail(mailOptions, (error,info)=>{
         
-//         res.send({message: "provide name"})
-//     }
-   
-// })
+        if(error){
+            console.log("could not send message")
+            return res.send({responseCode: "01", message: "Error occur while sending message"})
+        } 
+        else{ 
+            console.log("Message sent: %s", info.messageId);
+            return res.send({responseCode: "00", message: "success"})
+        } 
+    })
+})
 
-
-
-// module.exports = router;
+module.exports = router;

@@ -31,6 +31,12 @@ const testSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    teacherComment: {
+        type: String
+    },
+    adminComment: {
+        type: String
+    },
     testResult: [scoreSchema]
 })
 

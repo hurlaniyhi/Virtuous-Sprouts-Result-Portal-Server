@@ -15,7 +15,7 @@ const router = express.Router();
 //router.use(requireAuth)
 
 router.post("/upload-result", async(req, res)=>{
-        const {studentName, studentClass, teacherName, term, session, result, resultType} = req.body
+        const {studentName, studentClass, teacherName, term, session, result, resultType, teacherComment} = req.body
     if(!studentName || !studentClass || !teacherName || !term || 
         !session || !result || !resultType){
             return res.send({responseCode: "01", message: "Kindly provide all required information"})
@@ -36,6 +36,8 @@ router.post("/upload-result", async(req, res)=>{
                 teacherName,
                 term,
                 session,
+                teacherComment,
+                adminComment: "",
                 testResult: result
             })
               
@@ -63,6 +65,8 @@ router.post("/upload-result", async(req, res)=>{
                 teacherName,
                 term,
                 session,
+                teacherComment,
+                adminComment: "",
                 examResult: result
             })
               
@@ -94,6 +98,10 @@ router.post("/get-result", async(req,res) =>{
         var examResult = await Exam.findOne({studentName, term, session}) // studentClass
         let resultData = []
         let subjectResult = {};
+        let adminRemark = examResult.adminComment
+        if(!adminRemark){
+            adminRemark = testResult.adminComment
+        }
 
         if(!examResult && !testResult){
             return res.send({responseCode: "01", message: "The result you requested for did not exist"})
@@ -108,7 +116,12 @@ router.post("/get-result", async(req,res) =>{
                 }
                 resultData.push(subjectResult)
             }
-            return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {testId: testResult._id}})
+            return res.send({
+                responseCode: "00", message: "Success", 
+                result: resultData, resultID: {testId: testResult._id},
+                teacherComment: testResult.teacherComment,
+                adminComment: adminRemark
+            })
         }
         if(examResult && !testResult){
             for(let check of examResult.examResult){
@@ -120,11 +133,21 @@ router.post("/get-result", async(req,res) =>{
                 }
                 resultData.push(subjectResult)
             }
-            return res.send({responseCode: "00", message: "Success", result: resultData, resultID: {examId: examResult._id}})
+            return res.send({
+                responseCode: "00", message: "Success", 
+                result: resultData, resultID: {examId: examResult._id},
+                teacherComment: examResult.teacherComment,
+                adminComment: adminRemark
+            })
         }
         if(examResult && testResult){
             let combinedResult = cocantenateTestAndExam(examResult.examResult, testResult.testResult)
-            return res.send({responseCode: "00", message: "Success", result: combinedResult, resultID: {testId: testResult._id, examId: examResult._id}})
+            return res.send({
+                responseCode: "00", message: "Success", result: combinedResult, 
+                resultID: {testId: testResult._id, examId: examResult._id},
+                teacherComment: examResult.teacherComment,
+                adminComment: adminRemark
+            })
         }
     }
     catch(err){
@@ -282,6 +305,58 @@ router.post("/delete-result", async(req, res) => {
         return res.send({responseCode: "01", message: "Something went wrong", error: err})
     }
      
+})
+
+router.post('/resultComment', async(req,res) => {
+    const {resultType, resultId, adminComment} = req.body
+
+    if(resultType === 'Test'){
+        var check = await Test.findOne({_id: resultId})
+        if(!check){
+            return res.send({responseCode: "01", message: "The result you are trying to comment on did not have test result"})
+        }
+
+        await Test.findByIdAndUpdate({_id: resultId}, {
+                        
+            $set: {
+                adminComment
+            }
+                
+            }, {new: true}, (err,doc)=>{
+        
+            if (!err){
+                console.log({message:"successfully updated"})
+                return res.send({responseCode: "00", message: "Comment successfully added", updatedResult: doc})
+            }
+            else{
+                console.log("error occured during update")
+                return res.send({responseCode: "01", message: "error occured while adding comment"})
+            }
+        })
+    }
+    else if(resultType === "Exam"){
+        var check = await Exam.findOne({_id: resultId})
+        if(!check){
+            return res.send({responseCode: "01", message: "The result you are trying to comment on did not have exam result"})
+        }
+        await Exam.findByIdAndUpdate({_id: resultId}, {
+                        
+            $set: {
+                adminComment
+            }
+                
+            }, {new: true}, (err,doc)=>{
+        
+            if (!err){
+                console.log({message:"successfully updated"})
+                return res.send({responseCode: "00", message: "Comment successfully added", updatedResult: doc})
+            }
+            else{
+                console.log("error occured during update")
+                return res.send({responseCode: "01", message: "error occured while adding comment"})
+            }
+        })
+    }
 })
 
 // router.post("/deleteAll", async(req,res) =>{

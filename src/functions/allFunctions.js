@@ -59,7 +59,7 @@ exports.cocantenateTestAndExam = (firstArray, secondArray) => {
         else{
              subjectResult = {
                 subject: check.subject,
-                testScore: "",
+                testScore: "-",
                 examScore: check.score,
                 totalScore: check.score
             }
@@ -84,7 +84,7 @@ exports.cocantenateTestAndExam = (firstArray, secondArray) => {
            subjectResult = {
               subject: add.subject,
               testScore: add.score,
-              examScore: "",
+              examScore: "-",
               totalScore: add.score
           }
           combinedResult.push(subjectResult)

@@ -112,7 +112,7 @@ router.post("/get-result", async(req,res) =>{
                 subjectResult = {
                     subject: check.subject,
                     testScore: check.score,
-                    examScore: "",
+                    examScore: "-",
                     totalScore: check.score
                 }
                 resultData.push(subjectResult)
@@ -128,7 +128,7 @@ router.post("/get-result", async(req,res) =>{
             for(let check of examResult.examResult){
                 subjectResult = {
                     subject: check.subject,
-                    testScore: "",
+                    testScore: "-",
                     examScore: check.score,
                     totalScore: check.score
                 }

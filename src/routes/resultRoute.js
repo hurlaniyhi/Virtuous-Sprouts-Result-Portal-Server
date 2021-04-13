@@ -86,6 +86,7 @@ router.post("/upload-result", async(req, res)=>{
         
     }
     catch(err){
+        console.log(err)
         return res.send({responseCode: "101", message: "Something went wrong", error: err})
     }
 })
@@ -151,6 +152,7 @@ router.post("/get-result", async(req,res) =>{
         }
     }
     catch(err){
+        console.log(err)
         return res.send({responseCode: "101", message: "Something went wrong", error: err})
     }
     

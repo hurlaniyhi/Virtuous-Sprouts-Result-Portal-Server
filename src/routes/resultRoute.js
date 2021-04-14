@@ -99,14 +99,20 @@ router.post("/get-result", async(req,res) =>{
         var examResult = await Exam.findOne({studentName, term, session}) // studentClass
         let resultData = []
         let subjectResult = {};
-        let adminRemark = examResult.adminComment
-        if(!adminRemark){
-            adminRemark = testResult.adminComment
-        }
+        let adminRemark = ""
+        
 
         if(!examResult && !testResult){
             return res.send({responseCode: "01", message: "The result you requested for did not exist"})
         }
+
+        if(!examResult){
+            adminRemark = testResult.adminComment
+        }
+        else{
+            adminRemark = examResult.adminComment
+        }
+
         if(!examResult && testResult){
             for(let check of testResult.testResult){
                 subjectResult = {

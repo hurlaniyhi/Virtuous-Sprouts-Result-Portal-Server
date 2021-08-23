@@ -316,7 +316,17 @@ router.post("/delete-result", async(req, res) => {
 })
 
 router.post('/resultComment', async(req,res) => {
-    const {resultType, resultId, adminComment} = req.body
+    const {resultType, resultId, adminComment, commentType} = req.body
+
+    if(!resultType || !resultId || !adminComment || !commentType){
+        return res.send({responseCode: "01", message: "Kindly provide all required information"})
+    }
+
+    console.log({payload: req.body})
+
+    let commentKind;
+    commentKind = commentType === "Teacher" ? "teacherComment" : "adminComment"
+
 
     if(resultType === 'Test'){
         var check = await Test.findOne({_id: resultId})
@@ -327,7 +337,7 @@ router.post('/resultComment', async(req,res) => {
         await Test.findByIdAndUpdate({_id: resultId}, {
                         
             $set: {
-                adminComment
+                [`${commentKind}`]: adminComment
             }
                 
             }, {new: true}, (err,doc)=>{
@@ -350,7 +360,7 @@ router.post('/resultComment', async(req,res) => {
         await Exam.findByIdAndUpdate({_id: resultId}, {
                         
             $set: {
-                adminComment
+                [`${commentKind}`]: adminComment
             }
                 
             }, {new: true}, (err,doc)=>{

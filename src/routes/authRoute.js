@@ -102,7 +102,7 @@ router.post("/addMember", async(req,res) => {
            });
          
            let mailOptions = {
-             from: `"Virtuous Sprouts Academy" <olaniyi.jibola152@gmail.com>`, 
+             from: `"Virtuous Sprouts Academy" <virtuousproutsacademy@gmail.com>`, 
              to: email, 
              subject: "Login Details", 
              html: `<div>

@@ -23,10 +23,10 @@ router.post('/broadcastMail', async(req,res) => {
     }
 
     var receiver = emailReceivers
-    var sender = `"Virtuous Sprouts Academy" <rhydhurapp@gmail.com>`
+    var sender = `"Virtuous Sprouts Academy" <virtuousproutsacademy@gmail.com>`
 
     let transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
+        host: "smtp.gmail.com", 
         port: 465,
         secure: true,
          auth: {
@@ -47,7 +47,7 @@ router.post('/broadcastMail', async(req,res) => {
     transporter.sendMail(mailOptions, (error,info)=>{
         
         if(error){
-            console.log("could not send message")
+            console.log(error)
             return res.send({responseCode: "01", message: "Error occur while sending message"})
         } 
         else{ 

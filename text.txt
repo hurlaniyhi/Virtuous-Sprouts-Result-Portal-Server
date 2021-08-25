@@ -1,0 +1,10 @@
+How to get 16 character password for your gmail to use in any application.
+---------------------------------------------------------------------------
+
+- Go to manage account on your gmail
+- select security
+- turn on 2-step verification
+- select App Passwords
+- you will be asked to login again
+- select/type application/framework that will use the app
+- a 16 characters password will be generated for you that can then be use to access your gmail from the application/framework

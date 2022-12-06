@@ -23,6 +23,9 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json())
+app.get('/', (req, res) => {
+    res.send({message: 'Welcome back'})
+})
 app.use("/",authRoute)
 app.use("/",resultRoute)
 app.use("/",messageRoute)

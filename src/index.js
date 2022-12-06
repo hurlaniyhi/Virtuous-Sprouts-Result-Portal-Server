@@ -32,6 +32,7 @@ app.use("/",messageRoute)
 
 
 // fintech.request@gmail.com
+//web: node src/index.js
 
 const mongoUri = databaseKey
 

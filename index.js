@@ -11,17 +11,11 @@ const messageRoute = require("./src/routes/messageRoute")
 // const uploadRoute = require("./routes/uploadRoute")
 // const documentRoute = require("./routes/documentRoute")
 const {databaseKey} = require('./src/config')
-
 const requireAuth = require("./src/middlewares/requireAuth")
 var port = process.env.PORT || 5000 
-
 const app = express() 
 
-app.use(cors({
-    origin: '*', 
-    methods: '*',
-    credentials: true
-}));
+app.use(cors());
 
 app.use(bodyParser.json())
 app.get('/', (req, res) => {

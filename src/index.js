@@ -17,13 +17,13 @@ var port = process.env.PORT || 5000
 
 const app = express() 
 
-// const corsOptions = {
-//     origin: '*', 
-//     methods: '*',
-//     credentials: true
-// }
+const corsOptions = {
+    origin: '*', 
+    methods: '*',
+    credentials: true
+}
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json())
 app.use("/",authRoute)
 app.use("/",resultRoute)

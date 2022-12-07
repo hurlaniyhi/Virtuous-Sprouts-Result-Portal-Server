@@ -3,7 +3,7 @@ require("./src/models/Test")
 require("./src/models/Exam")
 const express = require('express')
 const mongoose = require('mongoose')
-//const cors = require('cors')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const authRoute = require("./src/routes/authRoute")
 const resultRoute = require("./src/routes/resultRoute")
@@ -15,21 +15,20 @@ const requireAuth = require("./src/middlewares/requireAuth")
 var port = process.env.PORT || 5000 
 const app = express() 
 
+const corsOption = {
+    origin: 'https://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
 //app.use(cors());
 
 app.use(bodyParser.json())
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    next()
-})
-
-app.get('/', (req, res) => {
+app.get('/', cors(corsOption), (req, res) => {
     res.send({message: 'Welcome back to school'}) 
 })
-app.use("/",authRoute)
-app.use("/",resultRoute)
-app.use("/",messageRoute)
+app.use("/", cors(corsOption), authRoute)
+app.use("/", cors(corsOption), resultRoute)
+app.use("/", cors(corsOption),messageRoute)
 
 
 // fintech.request@gmail.com

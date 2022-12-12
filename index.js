@@ -14,21 +14,15 @@ const {databaseKey} = require('./src/config')
 const requireAuth = require("./src/middlewares/requireAuth")
 var port = process.env.PORT || 5000 
 const app = express() 
-
-const corsOption = {
-    origin: 'https://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-//app.use(cors());
+app.use(cors());
 
 app.use(bodyParser.json())
-
-app.get('/', cors(corsOption), (req, res) => {
-    res.send({message: 'Welcome back to school'}) 
+app.get('/', (req, res) => {
+    res.send({message: 'Welcome back'}) 
 })
-app.use("/", cors(corsOption), authRoute)
-app.use("/", cors(corsOption), resultRoute)
-app.use("/", cors(corsOption),messageRoute)
+app.use("/", authRoute)
+app.use("/", resultRoute)
+app.use("/", messageRoute)
 
 
 // fintech.request@gmail.com

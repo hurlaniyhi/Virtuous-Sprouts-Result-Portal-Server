@@ -130,7 +130,7 @@ router.post("/addMember", async(req,res) => {
     }
     catch(err){
         console.log(err)
-        return res.send({responseCode: "01", message: "Could not add member, try again later", error: err})
+        return res.send({responseCode: "01", message: "Could not add member, try again later", error: err.message})
     }
 
 })
@@ -204,7 +204,7 @@ router.post("/changePassword", requireAuth, async(req,res) => {
             })
        }
        catch(err){
-           res.send({responseCode: "101", message: "Something went wrong", error: err})
+           res.send({responseCode: "101", message: "Something went wrong", error: err.message})
        }
        
 })
@@ -253,7 +253,7 @@ router.post("/fetchMembers", async(req,res) => {
         
     }
     catch(err){
-        res.send({responseCode: "101", message: "Something went wrong", error: err})
+        res.send({responseCode: "101", message: "Something went wrong", error: err.message})
     }  
 }) 
 
@@ -310,7 +310,7 @@ router.post("/updateMember", async(req,res) => {
                 gender
             }
                 
-            }, {new: true}, (err,doc)=>{
+            }, {new: true}, (err, doc)=>{
         
             if (!err){
                 console.log({responseCode: "00", message:"successfully updated", member: doc})
@@ -323,9 +323,31 @@ router.post("/updateMember", async(req,res) => {
         })
     }
     catch(err){
-        res.send({responseCode: "01", message: "Soemthing went wrong", error: err})
+        res.send({responseCode: "01", message: "Soemthing went wrong", error: err.message})
     }
 
+})
+
+router.post("/promote-students", async(req, res) => {
+    const {studentIds, newClass} = req.body
+
+    if(!studentIds.length || !newClass){
+        return res.send({responseCode: "01", message: "Kindly provide all required information"})
+    }
+
+    try {
+        let message = "Students successfully promoted"
+
+        for (let id of studentIds) {
+            const updatedMember = await Associate.findByIdAndUpdate({_id: id}, {memberClass: newClass}, {new: true})
+            if (!updatedMember) message = "Student promotion is not successfully completed"
+        }
+
+        return res.send({responseCode: "00", message})
+    }
+    catch(err){
+        res.send({responseCode: "01", message: "Soemthing went wrong", error: err.message})
+    }
 })
 
 

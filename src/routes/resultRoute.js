@@ -6,9 +6,11 @@ const multer = require('multer')
 //const path = require("path")
 //const requireAuth = require("../middlewares/requireAuth");
 const {cocantenateTestAndExam} = require('../functions/allFunctions')
+const { getCummulativeResult } = require('../functions/getCummulativeResult')
 const {secretKey, emailUser, emailPass} = require('../config')
 const Test = mongoose.model("Test");
 const Exam = mongoose.model("Exam");
+const Associate = mongoose.model("Associate");
 mongoose.set('useFindAndModify', false);
 
 const router = express.Router();
@@ -87,7 +89,7 @@ router.post("/upload-result", async(req, res)=>{
     }
     catch(err){
         console.log(err)
-        return res.send({responseCode: "101", message: "Something went wrong", error: err})
+        return res.send({responseCode: "101", message: "Something went wrong", error: err.message})
     }
 })
 
@@ -159,7 +161,7 @@ router.post("/get-result", async(req,res) =>{
     }
     catch(err){
         console.log(err)
-        return res.send({responseCode: "101", message: "Something went wrong", error: err})
+        return res.send({responseCode: "101", message: "Something went wrong", error: err.message})
     }
     
 })
@@ -235,7 +237,7 @@ router.post("/edit-result", async(req, res) => {
         }
     }
     catch(err){
-        return res.send({responseCode: "101", message: "Something went wrong", error: err})
+        return res.send({responseCode: "101", message: "Something went wrong", error: err.message})
     }
      
 })
@@ -310,7 +312,7 @@ router.post("/delete-result", async(req, res) => {
         }
     }
     catch(err){
-        return res.send({responseCode: "01", message: "Something went wrong", error: err})
+        return res.send({responseCode: "01", message: "Something went wrong", error: err.message})
     }
      
 })
@@ -374,6 +376,34 @@ router.post('/resultComment', async(req,res) => {
                 return res.send({responseCode: "01", message: "error occured while adding comment"})
             }
         })
+    }
+})
+
+router.get("/get-session-result", async(req, res) => {
+    const {studentClass, session} = req.body
+    let results = []
+
+    if(!studentClass|| !session){
+        return res.send({responseCode: "01", message: "Kindly provide all required information"})
+    }
+
+    try {
+        const students = await Associate.find({memberClass: studentClass, memberType: "Student"})
+        if (!students?.length) return res.send({responseCode: "01", message: "This class currently did not have any student"})
+
+        for (let student of students) {
+            let data = await getCummulativeResult({studentName: student.username, session})
+            results.push({
+                name: `${student.firstName} ${student.surname}`,
+                stduentId: student._id,
+                result: data
+            })
+        }
+
+        return res.send({responseCode: "00", message: "Success", data: results})
+    }
+    catch (err) {
+        return res.send({responseCode: "101", message: "Something went wrong", error: err.message})
     }
 })
 

@@ -1,7 +1,7 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const Staff = mongoose.model("Staff");
-// const requireAuth = require("../middlewares/requireAuth");
+const express = require("express");
+const mongoose = require("mongoose");
+const Staff = mongoose.model("Staff");
+const requireAuth = require("../middlewares/requireAuth");
 // const {cloudName, apiKey, apiSecret} = require('../config')
 // const crypto = require("crypto")
 // const multer = require('multer')

@@ -380,7 +380,7 @@ router.post('/resultComment', async(req,res) => {
 })
 
 router.get("/get-session-result", async(req, res) => {
-    const {studentClass, session} = req.body
+    const {studentClass, session} = req.query
     let results = []
 
     if(!studentClass|| !session){

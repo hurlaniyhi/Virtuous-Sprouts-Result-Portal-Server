@@ -55,3 +55,4 @@ app.get('/',requireAuth, (req, res) => {
 app.listen(port, ()=>{
     console.log(`Listening to port ${port}`)
 })
+

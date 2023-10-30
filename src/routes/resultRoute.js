@@ -395,7 +395,7 @@ router.get("/get-session-result", async(req, res) => {
             let data = await getCummulativeResult({studentName: student.username, session})
             results.push({
                 name: `${student.firstName} ${student.surname}`,
-                stduentId: student._id,
+                studentId: student._id,
                 result: data
             })
         }
